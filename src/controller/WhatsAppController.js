@@ -357,13 +357,67 @@ class WhatsAppController {
 
         // event para enviar o emoji 
         this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji => {
-
             emoji.on('click', e => {
 
                 console.log(emoji.dataset.unicode)
-            })
+
+                // tratando emoji e colocando no input text 
+
+                // metodo nativo do javascript para clonar o elemento e pega algumas propriedades
+                let img = this.el.imgEmojiDefault.cloneNode();
+
+                // pegandos as propriedades com a variavel img que esta cloando o emoji
+                img.style.cssText = emoji.style.cssText;
+                img.dataset.unicode = emoji.dataset.unicode;
+                img.alt = emoji.dataset.unicode;
+
+                // fazendo um foreach para lista todas as classes que tem em emoji
+                emoji.classList.forEach(name => {
+                    img.classList.add(name);
+                });
+
+                // append vai inserir no final img que esta sendo passada como parametro
+                // this.el.inputText.appendChild(img);
+
+                // getSelection metodo nativo para saber onde esta a posicao do teclado e nao do mouse
+                let cursor = window.getSelection();
+
+                // verificando se o curso esta focado no input
+                if (!cursor.focusNode || !cursor.focusNode.id == 'input-text') {
+                    this.el.inputText.focus();
+
+                    cursor = window.getSelection();
+                }
+
+                // range e intervalo de interacao metodo nativo do javascrit para criar o range do cursor
+                let range = document.createRange();
+
+                // pegando o ranger iniciando em 0 e atribuindo a variavel range
+                range = cursor.getRangeAt(0);
+
+                // Metodo nativo do js de deletar range
+                range.deleteContents();
+
+                // interfirindo no que foi digitado ou framgmento
+                let frag = document.createDocumentFragment();
+
+                // inserindo o emoji no fragmento
+                frag.appendChild(img);
+
+                // Inserindo fragmento dentro do node
+                range.insertNode(frag)
+
+                // atualizando o cursor
+                range.setStartAfter(img)
+
+                // forcando o evento aparece
+                this.el.inputText.dispatchEvent(new Event('keyup'));
+
+            });
 
         })
+
+
 
     };//initEvents
 
