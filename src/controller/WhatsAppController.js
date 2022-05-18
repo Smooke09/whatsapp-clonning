@@ -22,7 +22,7 @@ class WhatsAppController {
         });
     };
 
-
+    // Prototype
     elementsPrototype() {
 
         // ocultar 
@@ -280,12 +280,64 @@ class WhatsAppController {
 
         // Evento ao clicakr no X fechar modal de contatos
         this.el.btnCloseModalContacts.on('click', e => {
-
             this.el.modalContacts.hide();
 
         });
 
+        // Evento ao clicka no microfone
+        this.el.btnSendMicrophone.on('click', e => {
+
+            // Abrindo microphone e tirando o icon do microphone
+            this.el.recordMicrophone.show();
+            this.el.btnSendMicrophone.hide();
+
+            // Metodo para inicia a o tempo de gravacao de audio
+            this.startRecordMicrophoneTime();
+
+
+        });
+
+        // botao de cancelar o audio
+        this.el.btnCancelMicrophone.on('click', e => {
+
+            this.closeRecordMicrophone();
+        });
+
+
+        // botao de enviar o audio
+        this.el.btnFinishMicrophone.on('click', e => {
+
+            this.closeRecordMicrophone();
+        });
+
+
+
+
+
     };//initEvents
+
+
+    // Metodo para gerar o time da gravacao do audio
+    startRecordMicrophoneTime() {
+
+        let start = Date.now();
+
+        // colocando num atributo privado e fazendo aparecer na tela 
+        this._recordMicrophoneInterval = setInterval(() => {
+
+            this.el.recordMicrophoneTimer.innerHTML = Format.toTime((Date.now() - start));
+
+        }, 100)
+
+    }
+
+    // Metodo de fechar o recordMIcrophone e aparece o microphone
+    closeRecordMicrophone() {
+        this.el.recordMicrophone.hide();
+        this.el.btnSendMicrophone.show();
+        clearInterval(this._recordMicrophoneInterval)
+
+    };
 
 
     // metodo para ocultar tudo no panel
