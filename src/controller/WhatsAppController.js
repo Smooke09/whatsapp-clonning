@@ -164,8 +164,67 @@ class WhatsAppController {
             let formData = new FormData(this.el.formPanelAddContact);
 
         });
-    };
 
+        // Evento quando clicar no contato para aparecer a conversar
+        this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item => {
+
+            item.on('click', e => {
+
+                this.el.home.hide();
+                this.el.main.css({
+                    display: 'flex',
+
+                })
+            });
+
+        });
+
+        // Evento ao clickar no clip de anexar ou enviar a arquivo na conversa
+        this.el.btnAttach.on('click', e => {
+
+            // parando progação
+            e.stopPropagation();
+
+            this.el.menuAttach.addClass('open');
+
+            // FEchando o menu quando houver click em outro lugar
+            document.addEventListener('click', this.closeMenuAttach.bind(this))
+
+        });
+
+        // evento de click dentro do menu do clip nos itens
+        this.el.btnAttachPhoto.on('click', e => {
+            console.log('Photo')
+
+        });
+
+        // Clicando no icon camera
+        this.el.btnAttachCamera.on('click', e => {
+            console.log('camera')
+
+        });
+        // CLick no icon de documetnos
+        this.el.btnAttachDocument.on('click', e => {
+            console.log('Document')
+
+        });
+
+        // click no icon de contatos
+        this.el.btnAttachContact.on('click', e => {
+            console.log('COntact')
+
+        });
+
+    };//initEvents
+
+
+    // Metodo para quando houver click em outro lugar
+    closeMenuAttach(e) {
+
+        document.removeEventListener('click', this.closeMenuAttach)
+        this.el.menuAttach.removeClass('open');
+        console.log('remove menu')
+    }
 
     // METODO fechar todos painel do lado esquerdo
     closeAllLeftPanel() {
