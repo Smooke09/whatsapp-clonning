@@ -311,8 +311,59 @@ class WhatsAppController {
         });
 
 
+        // Eventos de textos
 
 
+        // Evento  de aperta enter ou ctrl ENTER
+        this.el.inputText.on('keypress', e => {
+
+            if (e.key === 'Enter' && !e.ctrlKey) {
+                e.preventDefault();
+                this.el.btnSend.click();
+            }
+
+        });
+
+
+
+        // Evento de texto mensagem
+        this.el.inputText.on('keyup', e => {
+
+            // if para verificar se tem alguma coisa escrita se tiver aprece botao de envia msg
+            // alterado no curso esta diferente
+            if (this.el.inputText.innerHTML && this.el.inputText.innerHTML != '<br>') {
+                this.el.inputPlaceholder.hide();
+                this.el.btnSendMicrophone.hide();
+                this.el.btnSend.show();
+            } else {
+                this.el.inputPlaceholder.show();
+                this.el.btnSendMicrophone.show();
+                this.el.btnSend.hide();
+            }
+
+            // evento ao clickar para enviar a mensagem
+            this.el.btnSend.on('click', e => {
+
+                console.log(this.el.inputText.innerHTML)
+
+            })
+        });
+
+        // evento para abrir panel de emoji
+        this.el.btnEmojis.on('click', e => {
+
+            this.el.panelEmojis.toggleClass('open')
+        })
+
+        // event para enviar o emoji 
+        this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji => {
+
+            emoji.on('click', e => {
+
+                console.log(emoji.dataset.unicode)
+            })
+
+        })
 
     };//initEvents
 
