@@ -194,36 +194,114 @@ class WhatsAppController {
 
         // evento de click dentro do menu do clip nos itens
         this.el.btnAttachPhoto.on('click', e => {
-            console.log('Photo')
+
+            // Acionadno evento do icon photo   
+            this.el.inputPhoto.click();
+        });
+
+        // Evento de abrir icon de photo
+        this.el.inputPhoto.on('change', e => {
+
+            console.log(this.el.inputPhoto.files);
+
+            // utilizando expred para trasforma em arry e fazer um foreach em cada item do array
+            [...this.el.inputPhoto.files].forEach(file => {
+
+                console.log(file)
+
+            });
 
         });
 
         // Clicando no icon camera
         this.el.btnAttachCamera.on('click', e => {
-            console.log('camera')
+
+            // Metodo removendo tudo
+            this.closeAllMainPanel();
+
+            // abrir a class
+            this.el.panelCamera.addClass('open')
+            // Abrir o panel de colocar a foto e dando
+            this.el.panelCamera.css({
+                'height': '100%'
+            });
+        });
+
+        // Evento ao clicakr no X fechar panelcamera
+        this.el.btnClosePanelCamera.on('click', e => {
+
+            this.closeAllMainPanel();
+            this.el.panelMessagesContainer.show();
 
         });
+
+        // evento ao clicar no botao de tirar foto dentro do panel
+        this.el.btnTakePicture.on('click', e => {
+
+
+            console.log('camera ')
+
+        });
+
         // CLick no icon de documetnos
         this.el.btnAttachDocument.on('click', e => {
-            console.log('Document')
+
+            this.closeAllMainPanel();
+            this.el.panelDocumentPreview.addClass('open');
+            this.el.panelDocumentPreview.css({
+                'height': '100%'
+            });
+
+
+        });
+
+        // Evento ao clickar no x fechar panelDocuments
+        this.el.btnClosePanelDocumentPreview.on('click', e => {
+
+            this.closeAllMainPanel();
+            this.el.panelMessagesContainer.show();
+
+        });
+
+        // evento ao clickar no botao de enviar documento
+        this.el.btnSendDocument.on('click', e => {
+
+            console.log('send document')
 
         });
 
         // click no icon de contatos
         this.el.btnAttachContact.on('click', e => {
-            console.log('COntact')
+
+            // exibir modal de contatos
+            this.el.modalContacts.show();
+
+        });
+
+        // Evento ao clicakr no X fechar modal de contatos
+        this.el.btnCloseModalContacts.on('click', e => {
+
+            this.el.modalContacts.hide();
 
         });
 
     };//initEvents
 
 
+    // metodo para ocultar tudo no panel
+    closeAllMainPanel() {
+        this.el.panelMessagesContainer.hide();
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelCamera.removeClass('open');
+
+    }
+
     // Metodo para quando houver click em outro lugar
     closeMenuAttach(e) {
 
         document.removeEventListener('click', this.closeMenuAttach)
         this.el.menuAttach.removeClass('open');
-        console.log('remove menu')
+        // console.log('remove menu')
     }
 
     // METODO fechar todos painel do lado esquerdo
