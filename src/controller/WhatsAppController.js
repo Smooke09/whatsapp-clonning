@@ -78,6 +78,23 @@ class WhatsAppController {
         Element.prototype.hasClass = function (name) {
             this.classList.contains(name)
         }
+
+        // pega o formulario e devolver em formData 
+        HTMLFormElement.prototype.getForm = function () {
+            return new FormData(this);
+        }
+
+        // prototype para gerar para JSON 
+        HTMLFormElement.prototype.toJSON = function () {
+
+            let json = {}
+
+            this.getForm().forEach((value, key) => {
+
+                json[key] = value
+            });
+            return json
+        }
     }
 
     initEvents() {
@@ -106,16 +123,51 @@ class WhatsAppController {
         // evento de click no arrow para voltar do perfil Profile
         this.el.btnClosePanelEditProfile.on('click', e => {
             this.el.panelEditProfile.removeClass('open')
-        })
+        });
 
         // evento de click no arrow para volta dos contactos
         this.el.btnClosePanelAddContact.on('click', e => {
             this.el.panelAddContact.removeClass('open')
-        })
+        });
 
+        // evento de clickar na foto
+        this.el.photoContainerEditProfile.on('click', e => {
+            console.log('foto')
+
+            // Abrir event de adicionar foto
+            this.el.inputProfilePhoto.click();
+
+        });
+
+        // evento de abrir a foto para selecionar
+        this.el.inputNamePanelEditProfile.on('keypress', e => {
+            console.log('foto')
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.el.btnSavePanelEditProfile.click();
+            }
+
+        });
+
+        // Evento de salva o nome inserido no input
+        this.el.btnSavePanelEditProfile.on('click', e => {
+            console.log(this.el.inputNamePanelEditProfile.innerHTML);
+        });
+
+
+        // evento submit no botao de adicionar
+        this.el.formPanelAddContact.on('submit', e => {
+            console.log('Botao de adicionar')
+
+            e.preventDefault();
+
+            let formData = new FormData(this.el.formPanelAddContact);
+
+        });
     };
 
-    // fechar todos painel do lado esquerdo
+
+    // METODO fechar todos painel do lado esquerdo
     closeAllLeftPanel() {
 
         this.el.panelAddContact.hide();
