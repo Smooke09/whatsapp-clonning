@@ -225,6 +225,9 @@ class WhatsAppController {
             this.el.panelCamera.css({
                 'height': '100%'
             });
+
+            // instanciado objeto camera 
+            this._camera = new CameraController(this.el.videoCamera);
         });
 
         // Evento ao clicakr no X fechar panelcamera
@@ -313,7 +316,6 @@ class WhatsAppController {
 
         // Eventos de textos
 
-
         // Evento  de aperta enter ou ctrl ENTER
         this.el.inputText.on('keypress', e => {
 
@@ -323,8 +325,6 @@ class WhatsAppController {
             }
 
         });
-
-
 
         // Evento de texto mensagem
         this.el.inputText.on('keyup', e => {
