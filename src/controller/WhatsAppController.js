@@ -2,7 +2,7 @@
 // importando 
 import { Format } from './../util/Format';
 import { CameraController } from './CameraController';
-
+import { DocumentPreviwController } from './DocumentPreviwController';
 
 export class WhatsAppController {
 
@@ -293,6 +293,76 @@ export class WhatsAppController {
             this.el.panelDocumentPreview.css({
                 'height': '100%'
             });
+
+            // selecionado input
+            this.el.inputDocument.click();
+
+        });
+
+
+        // configurando o send capturando arquivo enviado
+        this.el.inputDocument.on('change', e => {
+
+
+
+            if (this.el.inputDocument.files.length) {
+                // tratando arquivo 1 por vez
+                let file = this.el.inputDocument.files[0];
+
+
+                // criando objeto de leitura do arquivo(classe)
+                this._documentPreviwController = new DocumentPreviwController(file);
+
+                // mostrando preview do arquivo e retornando uma promesa
+                this._documentPreviwController.getPreviewData().then(result => {
+
+                    //  mostrando img na tela
+                    this.el.imgPanelDocumentPreview.src = result.src;
+                    // mostrando nome do arquivo
+                    this.el.infoPanelDocumentPreview.innerHTML = result.info;
+                    this.el.imagePanelDocumentPreview.show()
+                    this.el.filePanelDocumentPreview.hide()
+
+                }).catch(err => {
+                    // fazendo um swite dos tipos de dados
+                    console.log(file.type);
+
+                    switch (file.type) {
+
+                        // excel
+                        case 'application/vnd.ms-excel':
+                        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-xls';
+
+                            break;
+
+                        // powerpoint
+                        case 'application/vnd.ms-powerpoint':
+                        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-ppt';
+                            break;
+
+                        // word
+                        case 'application/msword':
+                        case 'application/doc':
+                            console.log('word')
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-doc';
+
+                            break
+
+                        default:
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
+                            break;
+                    }
+
+                    // carregando nome do documento
+                    this.el.filenamePanelDocumentPreview.innerHTML = file.name;
+                    this.el.imagePanelDocumentPreview.hide()
+                    this.el.filePanelDocumentPreview.show()
+                    // console.log('Arquivo nao definido', err)
+
+                });
+            }
 
 
         });
