@@ -1,4 +1,4 @@
-class CameraController {
+export class CameraController {
 
     constructor(videoEl) {
 
@@ -9,6 +9,7 @@ class CameraController {
         navigator.mediaDevices.getUserMedia({
             video: true
         }).then(stream => {
+            // logica diferente no curso utilizando novos recurso
             this._videoEl.srcObject = new MediaStream(stream);
             this._videoEl.play();
         }).catch(err => {

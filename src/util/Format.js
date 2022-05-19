@@ -1,4 +1,4 @@
-class Format {
+export class Format {
 
     // formatando para camelcase as class e id
     static getCamelCase(text) {
@@ -11,7 +11,6 @@ class Format {
     }
 
     // formantando data e hora do microphone record
-
     static toTime(duration) {
 
         let seconds = parseInt((duration / 1000) % 60);
