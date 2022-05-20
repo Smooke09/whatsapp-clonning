@@ -1,9 +1,5 @@
-// import * as firebase from 'firebase/app';
-// import '@firebase/firestore';
-const firebase = require("firebase");
+import firebase from "firebase";
 require("firebase/firestore");
-// import '@firebase/auth'
-
 export class Firebase {
 
     constructor() {
@@ -23,12 +19,11 @@ export class Firebase {
     }
 
     init() {
-        if (!window._initializedFirebase) {
-            firebase.initializeApp(this._config);
-
+        if (!this._initializedFirebase) {
+            firebase.initializeApp(this._config)
             firebase.firestore().settings({
                 timestampsInSnapshots: true
-            });
+            })
 
             window._initializedFirebase = true;
         }
@@ -37,27 +32,22 @@ export class Firebase {
     static db() {
         return firebase.firestore();
     }
-
     static hd() {
         return firebase.storage();
     }
-
     initAuth() {
         return new Promise((s, f) => {
-
             let provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider).then(result => {
-                let token = result.credential.accessToken;
-                let user = result.user;
-
-                s({
-                    user,
-                    token
+            firebase.auth().signInWithPopup(provider)
+                .then(result => {
+                    let token = result.credential.accessToken;
+                    let user = result.user;
+                    s(user, token);
                 })
-            }).catch(err => {
-                f(err);
-            });
-        })
+                .catch(err => {
+                    f(err);
+                });
+        });
     }
-
 }
+

@@ -4,7 +4,7 @@ import { Format } from './../util/Format';
 import { CameraController } from './CameraController';
 import { MicrophoneController } from './MicrophoneController';
 import { DocumentPreviwController } from './DocumentPreviwController';
-import { Firebase } from '../util/Firebase';
+import { Firebase } from './../util/Firebase';
 
 export class WhatsAppController {
 
@@ -12,10 +12,10 @@ export class WhatsAppController {
 
         console.log('WhatsAppController ok')
 
-        this.initAuth();
 
         // inicializando firabese
-        this.firebase = new Firebase();
+        this._firebase = new Firebase();
+        this.initAuth();
 
         // iniciando metodos
         this.elementsPrototype();
@@ -30,7 +30,7 @@ export class WhatsAppController {
 
     initAuth() {
 
-        this.firebase.initAuth().then(response => {
+        this._firebase.initAuth().then(response => {
 
             console.log('reponse', response)
 
