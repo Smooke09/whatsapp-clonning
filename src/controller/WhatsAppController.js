@@ -4,6 +4,7 @@ import { Format } from './../util/Format';
 import { CameraController } from './CameraController';
 import { MicrophoneController } from './MicrophoneController';
 import { DocumentPreviwController } from './DocumentPreviwController';
+import { Firebase } from '../util/Firebase';
 
 export class WhatsAppController {
 
@@ -11,13 +12,35 @@ export class WhatsAppController {
 
         console.log('WhatsAppController ok')
 
+        this.initAuth();
+
+        // inicializando firabese
+        this.firebase = new Firebase();
+
         // iniciando metodos
         this.elementsPrototype();
         this.loadeElements();
         // INiciando todos events
         this.initEvents();
 
+        console.log(this._firebase)
+
     }
+
+
+    initAuth() {
+
+        this.firebase.initAuth().then(response => {
+
+            console.log('reponse', response)
+
+        }).catch(err => {
+
+            console.error(err)
+
+        });
+    }
+
 
     // formatando todas as classes do css para camelCase
     loadeElements() {
