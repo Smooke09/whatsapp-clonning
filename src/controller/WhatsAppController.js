@@ -403,21 +403,28 @@ export class WhatsAppController {
             // Abrindo microphone e tirando o icon do microphone
             this.el.recordMicrophone.show();
             this.el.btnSendMicrophone.hide();
-            // Metodo para inicia a o tempo de gravacao de audio
-            this.startRecordMicrophoneTime();
 
             // Metodo pra iniciar a gravacao do audio
             this._microphoneController = new MicrophoneController()
 
-            this._microphoneController.on('play', audio => {
-                console.log('recebi o evento play', audio)
+            // metodo para inicia a gravacação
+            this._microphoneController.on('ready', audio => {
+                console.log('redy events')
+                // iniciando a gravação
+                this._microphoneController.startRecorder();
+            });
+
+            this._microphoneController.on('recordtimer', timer => {
+
+                this.el.recordMicrophoneTimer.innerHTML = Format.toTime(timer);
+
             });
         });
 
         // botao de cancelar o audio
         this.el.btnCancelMicrophone.on('click', e => {
 
-            this._microphoneController.stop();
+            this._microphoneController.stopRecorder();
             this.closeRecordMicrophone();
         });
 
@@ -425,8 +432,8 @@ export class WhatsAppController {
         // botao de enviar o audio
         this.el.btnFinishMicrophone.on('click', e => {
 
+            this._microphoneController.stopRecorder();
             this.closeRecordMicrophone();
-            this._microphoneController.stop();
         });
 
 
@@ -537,27 +544,10 @@ export class WhatsAppController {
 
     };//initEvents
 
-
-    // Metodo para gerar o time da gravacao do audio
-    startRecordMicrophoneTime() {
-
-        let start = Date.now();
-
-        // colocando num atributo privado e fazendo aparecer na tela 
-        this._recordMicrophoneInterval = setInterval(() => {
-
-            this.el.recordMicrophoneTimer.innerHTML = Format.toTime((Date.now() - start));
-
-        }, 100)
-
-    }
-
     // Metodo de fechar o recordMIcrophone e aparece o microphone
     closeRecordMicrophone() {
         this.el.recordMicrophone.hide();
         this.el.btnSendMicrophone.show();
-        clearInterval(this._recordMicrophoneInterval)
-
     };
 
 
