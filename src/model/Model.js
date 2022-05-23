@@ -10,6 +10,7 @@ export class Model extends ClassEvent {
 
     // definir o json
     fromJSON(json) {
+        // juntando o objeto data com o json
         this._data = Object.assign(this._data, json);
         this.trigger('datachange', this.toJSON());
     }
