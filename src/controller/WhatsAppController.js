@@ -45,25 +45,23 @@ export class WhatsAppController {
                     photo.src = data.photo;
                     photo.show();
                     this.el.imgDefaultPanelEditProfile.hide()
-
                     let photo2 = this.el.myPhoto.querySelector('img');
                     photo2.src = data.photo;
                     photo2.show();
-                }
-
-                this._user.save().then(() => {
-                    this.el.appContent.css({
-                        display: 'flex'
-                    });
-                });
+                };
             });
 
-            // this._user.name = response.user.displayName;
-            // this._user.email = response.user.email;
-            // this._user.photo = response.user.photoURL;
+            this._user.name = response.user.displayName;
+            this._user.email = response.user.email;
+            this._user.photo = response.user.photoURL;
 
+            this._user.save().then(() => {
+                this.el.appContent.css({
+                    display: 'flex'
+                });
+            });
         }).catch(err => {
-            console.error(err);
+            console.error(err)
         });
     }
 
