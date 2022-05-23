@@ -34,12 +34,14 @@ export class WhatsAppController {
 
             this._user = new User(response.user.email);
 
+            // evento criado
             this._user.on('datachange', data => {
 
                 document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
 
                 this.el.inputNamePanelEditProfile.innerHTML = data.name;
 
+                // alterando a foto
                 if (data.photo) {
                     let photo = this.el.imgPanelEditProfile;
                     photo.src = data.photo;
@@ -51,10 +53,12 @@ export class WhatsAppController {
                 };
             });
 
+            // inserindo no firabese
             this._user.name = response.user.displayName;
             this._user.email = response.user.email;
             this._user.photo = response.user.photoURL;
 
+            // fazendo aparece a tela do wpp
             this._user.save().then(() => {
                 this.el.appContent.css({
                     display: 'flex'
@@ -205,7 +209,17 @@ export class WhatsAppController {
 
         // Evento de salva o nome inserido no input
         this.el.btnSavePanelEditProfile.on('click', e => {
-            console.log(this.el.inputNamePanelEditProfile.innerHTML);
+
+            this.el.btnSavePanelEditProfile.disable = true;
+
+            this._user.name = this.el.inputNamePanelEditProfile.innerHTML
+
+            this._user.save().then(() => {
+
+                this.el.btnSavePanelEditProfile.disable = false;
+
+
+            })
         });
 
 
