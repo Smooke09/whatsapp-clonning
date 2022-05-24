@@ -26,6 +26,22 @@ export class Message extends Model {
     set status(value) { return this._data.status = value; }
 
 
+    static send(chatId, from, type, content) {
+        return Message.getRef(chatId).add({
+            content,
+            timeStamp: new Date,
+            status: 'wait',
+            type,
+            from,
+        });
+    };
+
+    static getRef(chatId) {
+        return Firebase.db().collection('chats').doc(chatId).collection('messages')
+
+    }
+
+
     // Metodo para verificar se a as msg
     getViewElement(me = true) {
 
@@ -227,6 +243,7 @@ export class Message extends Model {
                                 </div>
                             </div>
                         </div>
+   
                         <div class="_1mbqw">
                             <div class="QnDup">
                                 <span data-icon="ptt-out-blue">
@@ -281,7 +298,7 @@ export class Message extends Model {
 
             default:
                 div.innerHTML = `
-                <div class="font-style _3DFk6 tail" id="${this.id}">
+                <div class="font-style _3DFk6 tail" id="_${this.id}">
                 <span class="tail-container"></span>
                 <span class="tail-container highlight"></span>
                 <div class="Tkt2p">
@@ -307,18 +324,4 @@ export class Message extends Model {
 
     };
 
-    static send(chatId, from, type, content) {
-        return Message.getRef(chatId).add({
-            content,
-            timeStamp: new Date,
-            status: 'wait',
-            type,
-            from,
-        });
-    };
-
-    static getRef(chatId) {
-        return Firebase.db().collection('chats').doc(chatId).collection('messages')
-
-    }
 };
