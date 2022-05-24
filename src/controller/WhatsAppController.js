@@ -195,14 +195,11 @@ export class WhatsAppController {
                 let data = doc.data();
                 data.id = doc.id;
 
-                if (!this.el.
-                    panelMessagesContainer.querySelector('#_' + data.id)) {
+                if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
                     let message = new Message();
 
                     message.fromJSON(data);
-
-                    console.log(message)
 
                     let me = (data.from === this._user.email);
 
@@ -706,32 +703,33 @@ export class WhatsAppController {
                 this.el.btnSend.hide();
             }
 
-            // Evento  de aperta enter ou ctrl ENTER
-            this.el.inputText.on('keypress', e => {
-
-                if (e.key === 'Enter' && !e.ctrlKey) {
-                    e.preventDefault();
-                    this.el.btnSend.click();
-                }
-
-            });
-
-            // evento ao clickar para enviar a mensagem
-            this.el.btnSend.on('click', e => {
-                Message.send(
-                    this._contactActive.chatId,
-                    this._user.email,
-                    'text',
-                    this.el.inputText.innerHTML
-                );
-
-                this.el.inputText.innerHTML = '';
-                this.el.panelEmojis.removeClass('open');
-
-                console.log("qui", this.el.inputText.innerHTML)
-
-            })
         });
+
+        // Evento  de aperta enter ou ctrl ENTER
+        this.el.inputText.on('keypress', e => {
+
+            if (e.key === 'Enter' && !e.ctrlKey) {
+                e.preventDefault();
+                this.el.btnSend.click();
+            }
+
+        });
+
+        // evento ao clickar para enviar a mensagem
+        this.el.btnSend.on('click', e => {
+            Message.send(
+                this._contactActive.chatId,
+                this._user.email,
+                'text',
+                this.el.inputText.innerHTML
+            );
+
+            this.el.inputText.innerHTML = '';
+            this.el.panelEmojis.removeClass('open');
+
+            // console.log("reslovido", this.el.inputText.innerHTML)
+
+        })
 
         // evento para abrir panel de emoji
         this.el.btnEmojis.on('click', e => {
