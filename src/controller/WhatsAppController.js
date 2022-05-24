@@ -154,8 +154,6 @@ export class WhatsAppController {
 
         });
 
-        this._user.getContacts();
-
     }
 
 
@@ -309,6 +307,17 @@ export class WhatsAppController {
     }
 
     initEvents() {
+
+        // procurar os contatos search
+        this.el.inputSearchContacts.on('keyup', e => {
+            if (this.el.inputSearchContacts.value.length > 0) {
+                this.el.inputSearchContactsPlaceholder.hide();
+            } else {
+                this.el.inputSearchContactsPlaceholder.show();
+            }
+            this._user.getContacts(this.el.inputSearchContacts.value);
+        });
+
 
         // adicionando evento de click no icon de foto
         this.el.myPhoto.on('click', e => {
@@ -686,7 +695,8 @@ export class WhatsAppController {
 
             // if para verificar se tem alguma coisa escrita se tiver aprece botao de envia msg
             // alterado no curso esta diferente
-            if (this.el.inputText.innerHTML.length) {
+            if (this.el.inputText.innerHTML && this.el.inputText.innerHTML != '<br>')
+            /*if (this.el.inputText.innerHTML.length)*/ {
                 this.el.inputPlaceholder.hide();
                 this.el.btnSendMicrophone.hide();
                 this.el.btnSend.show();
