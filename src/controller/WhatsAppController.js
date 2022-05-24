@@ -161,9 +161,14 @@ export class WhatsAppController {
 
     setActiveChat(contact) {
 
+        if (this._contactActive) {
+            Message.getRef(this._contactActive.chatId).onSnapshot(() => { });
+        }
+
         this._contactActive = contact;
 
         this.el.activeName.innerHTML = contact.name;
+
         this.el.activeStatus.innerHTML = contact.status;
 
         if (contact.photo) {
@@ -174,7 +179,31 @@ export class WhatsAppController {
         this.el.home.hide()
         this.el.main.css({
             display: 'flex'
-        })
+        });
+
+        Message.getRef(this._contactActive.chatId).orderBy('timeStamp').onSnapshot(docs => {
+
+            this.el.panelMessagesContainer.innerHTML = '';
+
+            docs.forEach(doc => {
+                let data = doc.data();
+                data.id = doc.id;
+
+                if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
+
+                    let message = new Message();
+
+                    message.fromJSON(data);
+
+                    let me = (data.from === this._user.email);
+
+                    let view = message.getViewElement(me);
+
+                    this.el.panelMessagesContainer.appendChild(view)
+                }
+            });
+
+        });
 
     }
 
@@ -638,22 +667,13 @@ export class WhatsAppController {
 
         // Eventos de textos
 
-        // Evento  de aperta enter ou ctrl ENTER
-        this.el.inputText.on('keypress', e => {
-
-            if (e.key === 'Enter' && !e.ctrlKey) {
-                e.preventDefault();
-                this.el.btnSend.click();
-            }
-
-        });
 
         // Evento de texto mensagem
         this.el.inputText.on('keyup', e => {
 
             // if para verificar se tem alguma coisa escrita se tiver aprece botao de envia msg
             // alterado no curso esta diferente
-            if (this.el.inputText.innerHTML && this.el.inputText.innerHTML != '<br>') {
+            if (this.el.inputText.innerHTML.length) {
                 this.el.inputPlaceholder.hide();
                 this.el.btnSendMicrophone.hide();
                 this.el.btnSend.show();
@@ -663,24 +683,29 @@ export class WhatsAppController {
                 this.el.btnSend.hide();
             }
 
+            // Evento  de aperta enter ou ctrl ENTER
+            this.el.inputText.on('keypress', e => {
+
+                if (e.key === 'Enter' && !e.ctrlKey) {
+                    e.preventDefault();
+                    this.el.btnSend.click();
+                }
+
+            });
+
             // evento ao clickar para enviar a mensagem
             this.el.btnSend.on('click', e => {
-
-                this._contactActive;
-
                 Message.send(
                     this._contactActive.chatId,
                     this._user.email,
                     'text',
                     this.el.inputText.innerHTML
-
                 );
-
 
                 this.el.inputText.innerHTML = '';
                 this.el.panelEmojis.removeClass('open');
 
-                console.log(this.el.inputText.innerHTML)
+                console.log("qui", this.el.inputText.innerHTML)
 
             })
         });

@@ -25,7 +25,6 @@ export class Chat extends Model {
     static create(meEmail, contactEmail) {
 
         let users = {};
-
         users[btoa(meEmail)] = true;
         users[btoa(contactEmail)] = true;
 
@@ -35,15 +34,10 @@ export class Chat extends Model {
                 users,
                 timeStamp: new Date()
             }).then(doc => {
-
                 Chat.getRef().doc(doc.id).get().then(chat => {
-
                     s(chat);
-
                 }).catch(err => {
-
                     f(err)
-
                 })
             }).catch(err => {
                 f(err);
@@ -62,34 +56,23 @@ export class Chat extends Model {
 
 
     // 
+
     static createIfNotExists(meEmail, contactEmail) {
-
         return new Promise((s, f) => {
-
             Chat.find(meEmail, contactEmail).then(chats => {
-
                 if (chats.empty) {
-
                     Chat.create(meEmail, contactEmail).then(chat => {
-
-
                         s(chat);
-
                     });
-
                 } else {
-
                     chats.forEach(chat => {
-
                         s(chat);
-
                     });
-                };
+                }
             }).catch(err => {
-                f(err)
-
+                f(err);
             });
         });
-    };
+    }
 
 };
