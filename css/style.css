@@ -16144,5 +16144,6 @@ html[dir=rtl] ._2ICcy:after{
 }
 
 #picture-camera {
-   width: 90%;
+    width: 50%;
+    padding-top: 10px;
 }
