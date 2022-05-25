@@ -8,7 +8,7 @@ export class Firebase {
             apiKey: "AIzaSyAve5sUGE3WMRF_015BnCEaQ_BwPlnsJKg",
             authDomain: "whatsapp-f96fb.firebaseapp.com",
             projectId: "whatsapp-f96fb",
-            storageBucket: "whatsapp-f96fb.appspot.com",
+            storageBucket: "gs://whatsapp-f96fb.appspot.com",
             messagingSenderId: "91560487571",
             appId: "1:91560487571:web:f8f0633d74b9e04ddbbb66",
             measurementId: "G-SK7WWNQL7K"

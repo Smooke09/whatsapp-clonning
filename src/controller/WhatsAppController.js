@@ -476,13 +476,9 @@ export class WhatsAppController {
         // Evento de abrir icon de photo
         this.el.inputPhoto.on('change', e => {
 
-            console.log(this.el.inputPhoto.files);
-
             // utilizando expred para trasforma em arry e fazer um foreach em cada item do array
             [...this.el.inputPhoto.files].forEach(file => {
-
-                console.log(file)
-
+                Message.sendImage(this._contactActive.chatId, this._user.email, file);
             });
 
         });
