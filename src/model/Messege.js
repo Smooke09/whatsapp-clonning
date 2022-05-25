@@ -4,104 +4,105 @@ import { Format } from '../util/Format';
 
 export class Message extends Model {
 
-    constructor() {
+  constructor() {
 
-        super();
+    super();
 
-    }
+  }
 
-    get id() {
-        return this._data.id;
-    }
-    set id(value) {
-        return this._data.id = value;
-    }
+  get id() {
+    return this._data.id;
+  }
+  set id(value) {
+    return this._data.id = value;
+  }
 
-    get content() {
-        return this._data.content;
-    }
-    set content(value) {
-        return this._data.content = value;
-    }
+  get content() {
+    return this._data.content;
+  }
+  set content(value) {
+    return this._data.content = value;
+  }
 
-    get type() {
-        return this._data.type;
-    }
-    set type(value) {
-        return this._data.type = value;
-    }
+  get type() {
+    return this._data.type;
+  }
+  set type(value) {
+    return this._data.type = value;
+  }
 
-    get timeStamp() {
-        return this._data.timeStamp;
-    }
-    set timeStamp(value) {
-        return this._data.timeStamp = value;
-    }
+  get timeStamp() {
+    return this._data.timeStamp;
+  }
+  set timeStamp(value) {
+    return this._data.timeStamp = value;
+  }
 
-    get status() {
-        return this._data.status;
-    }
-    set status(value) {
-        return this._data.status = value;
-    }
+  get status() {
+    return this._data.status;
+  }
+  set status(value) {
+    return this._data.status = value;
+  }
 
-    static getRef(chatId) {
-        return Firebase.db().collection('chats')
-            .doc(chatId).collection('messages');
-    }
+  static getRef(chatId) {
+    return Firebase.db().collection('chats')
+      .doc(chatId).collection('messages');
+  }
 
-    static sendImage(chatId, from, file) {
-        return new Promise((s, f) => {
-            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
+  static sendImage(chatId, from, file) {
+    return new Promise((s, f) => {
+      let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
 
-            uploadTask.on('state_changed', e => {
-                //console.info('upload ', e);
-            }, err => {
-                console.error(err);
-            }, () => {
-                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-                    Message.send(
-                        chatId,
-                        from,
-                        'image',
-                        downloadURL
-                    ).then(() => {
-                        s();
-                    });
-                });
-            });
+      uploadTask.on('state_changed', e => {
+        //console.info('upload ', e);
+      }, err => {
+        console.error(err);
+      }, () => {
+        uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+          Message.send(
+            chatId,
+            from,
+            'image',
+            downloadURL
+          ).then(() => {
+            s();
+          });
         });
-    }
+      });
+    });
+  }
 
-    static send(chatId, from, type, content) {
-        return new Promise((s, f) => {
-            Message.getRef(chatId).add({
-                content,
-                timeStamp: new Date(),
-                status: 'wait',
-                type,
-                from
-            }).then(result => {
-                result.parent.doc(result.id).set({
-                    status: 'send'
-                }, {
-                    merge: true
-                }).then(() => {
-                    s();
-                });
-            });
+  static send(chatId, from, type, content) {
+    return new Promise((s, f) => {
+      Message.getRef(chatId).add({
+        content,
+        timeStamp: new Date(),
+        status: 'wait',
+        type,
+        from
+      }).then(result => {
+        result.parent.doc(result.id).set({
+          status: 'send'
+        }, {
+          merge: true
+        }).then(() => {
+          s();
         });
-    }
+      });
+    });
+  }
 
-    getViewElement(me = true) {
+  getViewElement(me = true) {
 
-        let div = document.createElement('div');
-        div.className = 'message';
+    let div = document.createElement('div');
+    div.className = 'message';
+    div.id = `_${this.id}`; // duplicando imagem resolvendo aqui nesse codigo
 
-        switch (this.type) {
+    switch (this.type) {
 
-            case 'contact':
-                div.innerHTML = `
+      case 'contact':
+        div.innerHTML = `
         <div class="_3_7SH kNKwo tail">
           <span class="tail-container"></span>
           <span class="tail-container highlight"></span>
@@ -137,10 +138,10 @@ export class Message extends Model {
           </div>
         </div>
         `;
-                break;
+        break;
 
-            case 'image':
-                div.innerHTML = `
+      case 'image':
+        div.innerHTML = `
             <div class="_3_7SH _3qMSo">
             <div class="KYpDv">
                 <div>
@@ -181,18 +182,18 @@ export class Message extends Model {
         </div>
         `;
 
-                div.querySelector('.message-photo').on('load', e => {
-                    div.querySelector('.message-photo').show();
-                    div.querySelector('._34Olu').hide();
-                    div.querySelector('._3v3PK').css({
-                        height: 'auto'
-                    });
-                });
+        div.querySelector('.message-photo').on('load', e => {
+          div.querySelector('.message-photo').show();
+          div.querySelector('._34Olu').hide();
+          div.querySelector('._3v3PK').css({
+            height: 'auto'
+          });
+        });
 
-                break;
+        break;
 
-            case 'document':
-                div.innerHTML = `
+      case 'document':
+        div.innerHTML = `
           <div class="_3_7SH _1ZPgd">
             <div class="_1fnMt _2CORf">
               <a class="_1vKRe" href="#">
@@ -233,10 +234,10 @@ export class Message extends Model {
         </div>
     </div>
         `;
-                break;
+        break;
 
-            case 'audio':
-                div.innerHTML = `
+      case 'audio':
+        div.innerHTML = `
           <div class="_3_7SH _17oKL">
             <div class="_2N_Df LKbsn">
                 <div class="_2jfIu">
@@ -313,10 +314,10 @@ export class Message extends Model {
             </div>
         </div>
         `;
-                break;
+        break;
 
-            default:
-                div.innerHTML = `
+      default:
+        div.innerHTML = `
           <div class="font-style _3DFk6 tail" id="_${this.id}">
             <span class="tail-container"></span>
             <span class="tail-container highlight"></span>
@@ -332,69 +333,69 @@ export class Message extends Model {
             </div>
           </div>
         `;
-        }
-
-        let className = 'message-in';
-
-        if (me) {
-            className = 'message-out';
-
-            div.querySelector('.message-time').parentElement.appendChild(this.getStatusViewElement());
-        }
-
-        div.firstElementChild.classList.add(className);
-
-        return div;
     }
 
-    getStatusViewElement() {
-        let div = document.createElement('div');
+    let className = 'message-in';
 
-        div.className = 'message-status';
+    if (me) {
+      className = 'message-out';
 
-        switch (this.status) {
+      div.querySelector('.message-time').parentElement.appendChild(this.getStatusViewElement());
+    }
 
-            case 'wait':
-                div.innerHTML = `
+    div.firstElementChild.classList.add(className);
+
+    return div;
+  }
+
+  getStatusViewElement() {
+    let div = document.createElement('div');
+
+    div.className = 'message-status';
+
+    switch (this.status) {
+
+      case 'wait':
+        div.innerHTML = `
           <span data-icon="msg-time">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
               <path fill="#859479" d="M9.75 7.713H8.244V5.359a.5.5 0 0 0-.5-.5H7.65a.5.5 0 0 0-.5.5v2.947a.5.5 0 0 0 .5.5h.094l.003-.001.003.002h2a.5.5 0 0 0 .5-.5v-.094a.5.5 0 0 0-.5-.5zm0-5.263h-3.5c-1.82 0-3.3 1.48-3.3 3.3v3.5c0 1.82 1.48 3.3 3.3 3.3h3.5c1.82 0 3.3-1.48 3.3-3.3v-3.5c0-1.82-1.48-3.3-3.3-3.3zm2 6.8a2 2 0 0 1-2 2h-3.5a2 2 0 0 1-2-2v-3.5a2 2 0 0 1 2-2h3.5a2 2 0 0 1 2 2v3.5z"></path>
             </svg>
           </span>
         `;
-                break;
+        break;
 
-            case 'send':
-                div.innerHTML = `
+      case 'send':
+        div.innerHTML = `
           <span data-icon="msg-check">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
               <path fill="#859479" d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
             </svg>
           </span>
         `;
-                break;
+        break;
 
-            case 'received':
-                div.innerHTML = `
+      case 'received':
+        div.innerHTML = `
           <span data-icon="msg-dblcheck">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
               <path fill="#859479" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
             </svg>
           </span>
         `;
-                break;
+        break;
 
-            case 'read':
-                div.innerHTML = `
+      case 'read':
+        div.innerHTML = `
           <span data-icon="msg-dblcheck-ack">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
               <path fill="#4FC3F7" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
             </svg>
           </span>
         `;
-                break;
-        }
-
-        return div;
+        break;
     }
-} 
+
+    return div;
+  }
+} //class
