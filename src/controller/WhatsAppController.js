@@ -10,6 +10,7 @@ import { Chat } from '../model/Chat';
 import { Message } from '../model/Messege';
 import { Base64 } from '../util/Base64';
 import { ContactsController } from './ContactsController';
+import { Upload } from '../util/Upload';
 
 export class WhatsAppController {
 
@@ -405,6 +406,26 @@ export class WhatsAppController {
             // Abrir event de adicionar foto
             this.el.inputProfilePhoto.click();
 
+        });
+
+        this.el.inputProfilePhoto.on('change', e => {
+
+            if (this.el.inputProfilePhoto.files.length > 0) {
+
+                let file = this.el.inputProfilePhoto.files[0];
+
+                Upload.send(file, this._user.email).then(snapshot => {
+
+                    snapshot.ref.getDownloadURL().then(downloadURL => {
+
+                        this._user.photo = downloadURL.toString();
+
+                        this._user.save().then(() => {
+                            this.el.btnClosePanelEditProfile.click();
+                        });
+                    });
+                });
+            }
         });
 
         // evento de abrir a foto para selecionar
