@@ -87,13 +87,12 @@ export class WhatsAppController {
 
             docs.forEach(doc => {
 
-                let contact = doc.data();
+                let contact = doc;
                 let div = document.createElement('div');
 
                 div.className = 'contact-item';
-
-                div.innerHTML = ` 
-                  <div class="dIyEr">
+                div.innerHTML = `
+            <div class="dIyEr">
                 <div class="_1WliW" style="height: 49px; width: 49px;">
                     <img src="#" class="Qgzj8 gqwaM photo" style="display:none;">
                     <div class="_3ZW2E">
@@ -114,7 +113,7 @@ export class WhatsAppController {
                         <span dir="auto" title="${contact.name}" class="_1wjpf">${contact.name}</span>
                     </div>
                     <div class="_3Bxar">
-                        <span class="_3T2VG">${contact.lastMessageTime}</span>
+                        <span class="_3T2VG">${Format.timeStampToTime(contact.lastMessageTime)}</span>
                     </div>
                 </div>
                 <div class="_1AwDx">
@@ -137,10 +136,9 @@ export class WhatsAppController {
                                     </div>
                             </span></div>
                             </span>
+                        </div>
                     </div>
-                </div>
-            </div>
-            `;
+                </div>`;
 
                 if (contact.photo) {
                     let img = div.querySelector('.photo');
@@ -149,13 +147,15 @@ export class WhatsAppController {
                 }
 
                 div.on('click', e => {
+
                     this.setActiveChat(contact);
                 });
 
                 this.el.contactsMessagesList.appendChild(div);
             });
-
         });
+
+        this._user.getContacts();
 
     }
 
