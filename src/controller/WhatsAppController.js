@@ -28,9 +28,58 @@ export class WhatsAppController {
         this.loadeElements();
         // INiciando todos events
         this.initEvents();
+        this.checkNotifications();
 
         console.log(this._firebase)
 
+    }
+
+    checkNotifications() {
+
+        if (typeof Notification === 'function') {
+
+            if (Notification.permission !== 'granted') {
+
+                this.el.alertNotificationPermission.show();
+            } else {
+
+                this.el.alertNotificationPermission.hide();
+            }
+
+            this.el.alertNotificationPermission.on('click', e => {
+
+                Notification.requestPermission(permission => {
+
+                    if (permission === 'granted') {
+
+                        this.el.alertNotificationPermission.hide();
+                        console.info('Notificações permitidas');
+                    }
+                });
+            });
+        }
+    }
+
+    notification(data) {
+
+        if (Notification.permission === 'granted' && !this._active) {
+
+            let news = new Notification(this._contactActive.name, {
+                icon: this._contactActive.photo,
+                body: data.content
+            });
+
+            let sound = new Audio('./audio/alert.mp3');
+            sound.currentTime = 0;
+            sound.play();
+
+            setTimeout(() => {
+
+                if (news) {
+                    news.close();
+                }
+            }, 3000);
+        }
     }
 
     // Inicia autenticação do firebase
@@ -159,7 +208,6 @@ export class WhatsAppController {
 
     }
 
-
     setActiveChat(contact) {
 
         if (this._contactActive) {
@@ -167,6 +215,8 @@ export class WhatsAppController {
         }
 
         this._contactActive = contact;
+
+        this._messagesReceived = [];
 
         this.el.activeName.innerHTML = contact.name;
 
@@ -194,6 +244,7 @@ export class WhatsAppController {
 
             let autoScroll = (scrollTop >= scrollTopMax);
 
+
             docs.forEach(doc => {
                 let data = doc.data();
                 data.id = doc.id;
@@ -204,8 +255,15 @@ export class WhatsAppController {
 
                 let me = (data.from === this._user.email);
 
-                let view = message.getViewElement(me);
+                if (!me && this._messagesReceived.filter(id => {
+                    return (id === data.id)
+                }).length === 0) {
 
+                    this.notification(data);
+                    this._messagesReceived.push(data.id);
+                }
+
+                let view = message.getViewElement(me);
 
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
